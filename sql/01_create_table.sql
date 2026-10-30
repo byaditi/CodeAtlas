@@ -64,15 +64,15 @@ SELECT DATABASE();
  SHOW TABLES;
  
  -- 7. sotre contests
- create table contests (
+create table contests (
  contest_id int auto_increment primary key,
  platform_id int not null,
  contest_name varchar(150) not null,
  start_time datetime,
- duration_minutes INT
+ duration_minutes int,
  contest_url varchar(300),
  foreign key (platform_id) references platforms(platform_id)
- );
+);
  
 -- 8. connect contest with problem
 -- many-to-many relationship using a composite primary key.
