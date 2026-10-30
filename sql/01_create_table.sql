@@ -27,8 +27,8 @@ SELECT DATABASE();
  
  foreign key (user_id) references users(user_id),
  foreign key (platform_id) references platforms(platform_id),
- unique(platform_id,handel), -- to prevent duplicate platform accounts in CodeAtlas
- unique(user_id, platform_id) 
+ unique(platform_id, handle), -- to prevent duplicate platform accounts in CodeAtlas
+ unique(user_id, platform_id) -- composite unique constraint
  );
  -- display all tables 
  SHOW TABLES;
@@ -50,14 +50,17 @@ SELECT DATABASE();
  tag_name varchar(50) not null unique
  );
  
- -- 6. connect problems with topics
+-- 6. connect problems with topics
+-- many-to-many relationship using a composite primary key.
+
  create table problem_tag (
  problem_id int,
  tag_id int,
- primary key (problem_id, tag_id),
- foreign key (problem_id) references problems(problem_id),
- foreign key (tag_id) references tag(tag_id)
+ primary key (problem_id, tag_id), -- composite primary key
+ foreign key (problem_id) references problems(problem_id) on delete cascade, -- foreign key with cascade delete
+ foreign key (tag_id) references tag(tag_id) on delete cascade
  );
+ 
  SHOW TABLES;
  
  -- 7. sotre contests
@@ -66,22 +69,24 @@ SELECT DATABASE();
  platform_id int not null,
  contest_name varchar(150) not null,
  start_time datetime,
- durarion_minutes int,
+ duration_minutes INT
  contest_url varchar(300),
  foreign key (platform_id) references platforms(platform_id)
  );
  
- -- 8. connect contest with problem
+-- 8. connect contest with problem
+-- many-to-many relationship using a composite primary key.
+
  create table contest_problem (
  contest_id int,
  problem_id int,
  points decimal(6,2),
- primary key(contest_id, problem_id),
- foreign key (contest_id) references contests(contest_id),
- foreign key (problem_id) references problems(problem_id)
+ primary key(contest_id, problem_id), -- composite primary key
+ foreign key (contest_id) references contests(contest_id) on delete cascade, -- foreign key with cascade delete
+ foreign key (problem_id) references problems(problem_id) on delete cascade
  );
  
- -- 9. store contest particiaption 
+ -- 9. store contest particiaption (relationship between users and contests)
  create table contest_participation (
  contest_id int,
  user_id int,
@@ -104,7 +109,7 @@ SELECT DATABASE();
  verdict_name varchar(100) not null unique
  );
  
- -- 12. store submissions
+ -- 12. store submissions (one-to-many relationships)
  create table submissions (
  submission_id bigint auto_increment primary key,
  user_id int not null,
@@ -119,7 +124,7 @@ SELECT DATABASE();
  foreign key (problem_id) references problems(problem_id),
  foreign key (language_id) references languages(language_id),
  foreign key (verdict_id) references verdicts(verdict_id),
- foreign key (contest_id) references contests(contest_id)
+ foreign key (user_id) references users(user_id)
  );
  SHOW TABLES;
  
