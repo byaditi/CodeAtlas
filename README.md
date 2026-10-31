@@ -261,14 +261,9 @@ cmake --build build
 ./build/CodeAtlas
 ```
 
-## About
-
-**Project Name:** CodeAtlas  
-**Subject:** Relational Database Management Systems (RDBMS)  
-**Course:** B.Tech Computer Science and Engineering  
-**University:** Manipal University Jaipur  
-**Made by:** Aditi Ranjan
 
 ---
 
 This project was developed as part of learning and implementing different RDBMS concepts.
+
+**To-do (hopefully):** will try building my own database from scratch instead of using musql workbench, just to understand how everything actually works behind the scenes.
