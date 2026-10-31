@@ -1,4 +1,4 @@
-
+#include <limits>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -14,16 +14,12 @@ using namespace std;
 
 void showMenu() {
     cout << "\n========================================\n";
-    cout << "                 CodeAtlas\n";
+    cout << "                 CODEATLAS\n";
     cout << "       RDBMS Learning & Analytics\n";
     cout << "========================================\n";
     cout << "1. Project Overview\n";
     cout << "2. Database Design and Modelling\n";
-    cout << "3. SQL Queries and Operations\n";
-    cout << "4. Database Objects and Stored Programs\n";
-    cout << "5. Transactions and Security\n";
-    cout << "6. Advanced DBMS Concepts\n";
-    cout << "7. Run MySQL Report\n";
+    cout << "3. Run MySQL Report\n";
     cout << "0. Exit\n";
     cout << "----------------------------------------\n";
     cout << "Choose an option: ";
@@ -40,6 +36,36 @@ int getChoice() {
     }
     return choice;
 }
+void displayResult(mysqlx::SqlResult& result) {
+    unsigned int columns = result.getColumnCount();
+    if (columns == 0) {
+        cout << "Query executed successfully.\n";
+        return;
+    }
+    for (unsigned int i = 0; i < columns; i++) {
+        cout << result.getColumn(i).getColumnLabel();
+        if (i + 1 < columns) cout << " | ";
+    }
+    cout << '\n';
+    for (unsigned int i = 0; i < columns; i++) {
+        cout << "----------------";
+        if (i + 1 < columns) cout << "-+-";
+    }
+    cout << '\n';
+    int rowCount = 0;
+    for (mysqlx::Row row : result) {
+        for (unsigned int i = 0; i < columns; i++) {
+            if (row[i].isNull()) cout << "NULL";
+            else cout << row[i];
+
+            if (i + 1 < columns) cout << " | ";
+        }
+        cout << '\n';
+        rowCount++;
+    }
+    if (rowCount == 0) cout << "No records found.\n";
+    else cout << "\nTotal records: " << rowCount << '\n';
+}
 void showTopics(const string& title, const string topics[],int count, const string& sqlFile) {
     int choice = -1;
     while (choice != 0) {
@@ -50,7 +76,6 @@ void showTopics(const string& title, const string topics[],int count, const stri
         cout << "0. Back to Main Menu\n";
         cout << "Choose a topic: ";
         choice = getChoice();
-
         if (choice >= 1 && choice <= count) {
             cout << "\nTopic: " << topics[choice - 1] << "\n";
             cout << "Related SQL files: " << sqlFile << "\n";
@@ -65,105 +90,100 @@ void showTopics(const string& title, const string topics[],int count, const stri
         }
     }
 }
-
 // ---------------- DATABASE DESIGN ----------------
 
 void databaseDesignMenu() {
-    const string topics[] = {
-        "Introduction to DBMS and Database Concepts",
-        "Data Models and Relational Model",
-        "Entity-Relationship (ER) Modelling",
-        "ER-to-Relational Model Conversion",
-        "Relational Schema Design",
-        "Normalization: 1NF, 2NF, 3NF and BCNF",
-        "Keys and Integrity Constraints",
-        "Database Schema Creation (DDL)"
-    };
-    showTopics(
-        "Database Design and Modelling",
-        topics,
-        8,
-        "sql/01_create_table.sql, sql/02_constraints.sql, "
-        "sql/03_alter_operations.sql"
-    );
-}
-// ---------------- SQL QUERIES ----------------
-void sqlQueriesMenu() {
-    const string topics[] = {
-        "DDL: CREATE, ALTER, DROP and TRUNCATE",
-        "DML: INSERT, UPDATE and DELETE",
-        "Basic SELECT Queries and WHERE",
-        "Aggregate Functions: COUNT, SUM, AVG, MIN, MAX",
-        "GROUP BY and HAVING",
-        "INNER JOIN and OUTER JOINS",
-        "Nested Queries and Subqueries",
-        "Set Operations",
-        "ORDER BY and DISTINCT",
-        "Competitive Programming Analytics Queries"
-    };
-    showTopics(
-        "SQL Queries and Operations",
-        topics,
-        10,
-        "sql/03_alter_operations.sql, sql/05_dml_operations.sql, "
-        "sql/06_joins.sql, sql/07_subqueries.sql, sql/14_reports.sql"
-    );
-}
+    int choice = -1;
+    try {
+        mysqlx::Session session("127.0.0.1", 33060, "root", "");
+        session.sql("USE CodeAtlas").execute();
+        while (choice != 0) {
+            cout << "\n========== Database Design and Modelling ==========\n";
+            cout << "1. Show all tables\n";
+            cout << "2. Describe a table\n";
+            cout << "3. Show primary keys\n";
+            cout << "4. Show foreign key relationships\n";
+            cout << "5. Show database views\n";
+            cout << "0. Back to Main Menu\n";
+            cout << "Choose an option: ";
+            choice = getChoice();
 
-// ---------------- DATABASE OBJECTS ----------------
-void databaseObjectsMenu() {
-    const string topics[] = {
-        "Views",
-        "Indexes and Query Optimization",
-        "Stored Procedures",
-        "Triggers",
-        "MySQL Stored Programs and Database Programming"
-    };
-    showTopics(
-        "Database Objects and Stored Programs",
-        topics,
-        5,
-        "sql/08_views.sql, sql/09_indexes.sql, "
-        "sql/12_procedures.sql, sql/13_triggers.sql"
-    );
-}
-// ---------------- TRANSACTIONS AND SECURITY ----------------
-void transactionsMenu() {
-    const string topics[] = {
-        "ACID Properties",
-        "Transaction Control: COMMIT and ROLLBACK",
-        "SAVEPOINT",
-        "Transaction Schedules",
-        "Conflict Serializability",
-        "Concurrency Control and Locking",
-        "Database Recovery",
-        "User Privileges: GRANT and REVOKE"
-    };
-    showTopics(
-        "Transactions and Security",
-        topics,
-        8,
-        "sql/10_transactions.sql, sql/11_privileges.sql"
-    );
-}
-// ---------------- ADVANCED DBMS ----------------
-void advancedDBMSMenu() {
-    const string topics[] = {
-        "Indexing and B+ Trees",
-        "Query Processing and Optimization",
-        "Distributed Databases",
-        "Database Failure and Recovery Techniques",
-        "Concurrency Problems",
-        "Introduction to NoSQL",
-        "Relational Databases vs NoSQL",
-        "Real-World Database Applications"
-    };
-    showTopics(
-        "Advanced DBMS Concepts",
-        topics,
-        8,
-        "See the relevant examples in the sql/ directory"
-    );
+            switch (choice) {
+                case 1: {
+                    mysqlx::SqlResult result = session.sql(
+                        "SELECT table_name "
+                        "FROM information_schema.tables "
+                        "WHERE table_schema = 'CodeAtlas' "
+                        "AND table_type = 'BASE TABLE' "
+                        "ORDER BY table_name"
+                    ).execute();
+                    displayResult(result);
+                    break;
+                }
+                case 2: {
+                    string tableName;
+                    cout << "Enter table name: ";
+                    cin >> tableName;
+                    mysqlx::SqlResult result = session.sql(
+                        "SELECT column_name, column_type, is_nullable, "
+                        "column_key, column_default "
+                        "FROM information_schema.columns "
+                        "WHERE table_schema = 'CodeAtlas' "
+                        "AND table_name = ? "
+                        "ORDER BY ordinal_position"
+                    ).bind(tableName).execute();
+                    displayResult(result);
+                    break;
+                }
+                case 3: {
+                    mysqlx::SqlResult result = session.sql(
+                        "SELECT table_name, column_name "
+                        "FROM information_schema.key_column_usage "
+                        "WHERE table_schema = 'CodeAtlas' "
+                        "AND constraint_name = 'PRIMARY' "
+                        "ORDER BY table_name, ordinal_position"
+                    ).execute();
+                    displayResult(result);
+                    break;
+                }
+                case 4: {
+                    mysqlx::SqlResult result = session.sql(
+                        "SELECT table_name, column_name, "
+                        "referenced_table_name, referenced_column_name "
+                        "FROM information_schema.key_column_usage "
+                        "WHERE table_schema = 'CodeAtlas' "
+                        "AND referenced_table_name IS NOT NULL "
+                        "ORDER BY table_name"
+                    ).execute();
+
+                    displayResult(result);
+                    break;
+                }
+                case 5: {
+                    mysqlx::SqlResult result = session.sql(
+                        "SELECT table_name "
+                        "FROM information_schema.views "
+                        "WHERE table_schema = 'CodeAtlas' "
+                        "ORDER BY table_name"
+                    ).execute();
+                    displayResult(result);
+                    break;
+                }
+                case 0:
+                    cout << "Returning to main menu...\n";
+                    break;
+                default:
+                    cout << "Invalid choice. Try again.\n";
+            }
+        }
+        session.close();
+    }
+    catch (const mysqlx::Error& error) {
+        cout << "\nMySQL error: " << error.what() << '\n';
+    }
+    catch (const exception& error) {
+        cout << "\nError: " << error.what() << '\n';
+    }
 }
 // ---------------- SQL FILE READER ----------------
 string readSQLFile(const string& filePath) {
@@ -338,7 +358,43 @@ bool runDatabaseReport() {
         }
     }
 }
-
+// ---------------- PROJECT OVERVIEW ----------------
+void projectOverviewMenu() {
+    try {
+        mysqlx::Session session("127.0.0.1", 33060, "root", "");
+        session.sql("USE CodeAtlas").execute();
+        cout << "\n========== CodeAtlas Project Overview ==========\n";
+        mysqlx::SqlResult result = session.sql(
+            "SELECT "
+            "(SELECT COUNT(*) FROM users) AS total_users, "
+            "(SELECT COUNT(*) FROM platforms) AS total_platforms, "
+            "(SELECT COUNT(*) FROM problems) AS total_problems, "
+            "(SELECT COUNT(*) FROM contests) AS total_contests, "
+            "(SELECT COUNT(*) FROM submissions) AS total_submissions, "
+            "(SELECT COUNT(*) FROM information_schema.tables "
+            "WHERE table_schema = 'CodeAtlas' "
+            "AND table_type = 'BASE TABLE') AS total_tables, "
+            "(SELECT COUNT(*) FROM information_schema.views "
+            "WHERE table_schema = 'CodeAtlas') AS total_views"
+        ).execute();
+        cout << "\nLive database statistics:\n";
+        displayResult(result);
+        cout << "\nProject modules:\n";
+        cout << "1. User and platform management\n";
+        cout << "2. Problem and contest management\n";
+        cout << "3. Submission tracking\n";
+        cout << "4. Database views and indexes\n";
+        cout << "5. Stored procedures and triggers\n";
+        cout << "6. SQL analytics and reports\n";
+        session.close();
+    }
+    catch (const mysqlx::Error& error) {
+        cout << "\nMySQL error: " << error.what() << '\n';
+    }
+    catch (const exception& error) {
+        cout << "\nError: " << error.what() << '\n';
+    }
+}
 // ---------------- MAIN PROGRAM ----------------
 
 int main() {
@@ -348,38 +404,19 @@ int main() {
         choice = getChoice();
         switch (choice) {
             case 1:
-                cout << "\nCodeAtlas is a competitive programming "
-                        "database and analytics project.\n";
-                cout << "It organizes platforms, users, problems, "
-                        "contests and submissions.\n";
-                cout << "The project demonstrates concepts from "
-                        "the RDBMS syllabus.\n";
+                projectOverviewMenu();
                 break;
             case 2:
                 databaseDesignMenu();
                 break;
             case 3:
-                sqlQueriesMenu();
-                break;
-            case 4:
-                databaseObjectsMenu();
-                break;
-            case 5:
-                transactionsMenu();
-                break;
-            case 6:
-                advancedDBMSMenu();
-                break;
-            case 7:
-                if (!runDatabaseReport()) {
-                    choice = 0;
-                }
+                if (!runDatabaseReport()) choice = 0;
                 break;
             case 0:
                 cout << "\nExiting CodeAtlas. Goodbye!\n";
                 break;
             default:
-                cout << "\nInvalid choice. Enter a number from 0 to 7.\n";
+                cout << "\nInvalid choice. Enter a number from 0 to 3.\n";
         }
     }
 
