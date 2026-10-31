@@ -379,13 +379,6 @@ void projectOverviewMenu() {
         ).execute();
         cout << "\nLive database statistics:\n";
         displayResult(result);
-        cout << "\nProject modules:\n";
-        cout << "1. User and platform management\n";
-        cout << "2. Problem and contest management\n";
-        cout << "3. Submission tracking\n";
-        cout << "4. Database views and indexes\n";
-        cout << "5. Stored procedures and triggers\n";
-        cout << "6. SQL analytics and reports\n";
         session.close();
     }
     catch (const mysqlx::Error& error) {
