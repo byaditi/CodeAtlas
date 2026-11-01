@@ -266,4 +266,4 @@ cmake --build build
 
 This project was developed as part of learning and implementing different RDBMS concepts.
 
-**To-do (hopefully):** will try building my own database from scratch instead of using musql workbench, just to understand how everything actually works behind the scenes.
+> **To-do (hopefully):** I will try building my own database from scratch instead of using mysql workbench, just to understand how everything actually works behind the scenes.
