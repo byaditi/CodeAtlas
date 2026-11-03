@@ -12,38 +12,6 @@ It stores information about users, platforms, problems, contests, submissions, p
 - MySQL
 - MySQL Connector/C++
 - CMake
-## Environment Setup
-
-### Required Dependencies
-
-Make sure the following dependencies are installed before building the project:
-
-| Dependency | Purpose |
-|---|---|
-| C++ Compiler (Clang/GCC) | Compiles the C++ source code |
-| CMake (3.20 or above) | Configures and builds the project |
-| MySQL Server | Stores and manages the project database |
-| MySQL Connector/C++ | Connects the C++ application to MySQL |
-| OpenSSL 3 | Required by the MySQL Connector/C++ setup |
-| Git | Clones the project repository |
-
-### macOS
-
-If you are using macOS, you can install the required dependencies using Homebrew:
-
-```bash
-brew install cmake mysql mysql-connector-c++ openssl@3
-```
-
-Make sure that your C++ compiler and MySQL server are available.
-
-Start the MySQL server before building and executing the project.
-
-### Windows and Linux
-
-Homebrew is a package manager primarily used on macOS (it also supports Linux). Windows users can install the required dependencies using suitable package managers or install them manually.
-
-The `CMakeLists.txt` file currently contains local Homebrew paths for MySQL Connector/C++ and OpenSSL. If you are using another operating system, you will need to update these paths according to your installation.
 
 **Note:** The project has currently been configured and tested in a macOS environment. Setup on Windows and Linux may require additional configuration.
 ## Features
@@ -206,32 +174,29 @@ CodeAtlas/
 ### 1. Requirements
 
 Make sure you have:
-
-- C++ compiler
+- C++17 compiler
 - CMake 3.20 or later
 - MySQL Server
 - MySQL Connector/C++
-- OpenSSL
+- OpenSSL 3
 
 ### 2. Clone the Repository
 
 ```bash
-git clone <https://github.com/byaditi/CodeAtlas.git>
+git clone https://github.com/byaditi/CodeAtlas.git
 cd CodeAtlas
 ```
 
 ### 3. Set Up the Database
 
-Start MySQL and execute the SQL files from the `sql` folder.
-
-Start with:
+Start MySQL and execute the SQL files from the `sql` folder in the following order:
 
 1. `01_create_table.sql`
 2. `02_constraints.sql`
 3. `03_alter_operations.sql`
 4. `04_seed_data.sql`
 
-Then execute the remaining SQL files according to their purpose to create views, indexes, procedures, triggers and reports.
+Then execute the remaining SQL files as needed to create views, indexes, procedures, triggers and run reports.
 
 ### 4. Database Connection
 
@@ -246,7 +211,7 @@ mysqlx::Session session(
 );
 ```
 
-Change the username, password or port if your MySQL configuration is different.
+Update the username, password or port according to your MySQL configuration.
 
 ### 5. Build the Project
 
@@ -255,15 +220,18 @@ cmake -S . -B build
 cmake --build build
 ```
 
-### 6. Run
+### 6. Run the Project
 
 ```bash
 ./build/CodeAtlas
 ```
 
-
+> **Note:** This project has currently been tested only on macOS, other operating systems may require additional setup or changes to the CMake configuration and dependency paths.
 ---
 
-This project was developed as part of learning and implementing different RDBMS concepts.
+This project was developed as part of learning and applying RDBMS concepts through a hands-on project.
 
-> **To-do (hopefully):** I will try building my own database from scratch instead of using mysql workbench, just to understand how everything actually works behind the scenes.
+## what i'd like to explore next
+
+- Try building a small database system from scratch and eventually explore the possibility of integrating it with codeatlas.
+- Understand how databases work internally, including data storage, table management, query processing and relationship handling.
