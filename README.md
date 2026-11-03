@@ -12,8 +12,8 @@ It stores information about users, platforms, problems, contests, submissions, p
 - MySQL
 - MySQL Connector/C++
 - CMake
+- OpenSSL 3
 
-**Note:** The project has currently been configured and tested in a macOS environment. Setup on Windows and Linux may require additional configuration.
 ## Features
 
 ### 1. Database Design
@@ -130,6 +130,7 @@ The main menu contains three options:
 0. Exit
 ========================================
 ```
+reports are predefined.
 
 **Project Overview:** Shows the current database statistics, such as total users, platforms, problems, contests, submissions, tables and views.
 
@@ -162,7 +163,6 @@ CodeAtlas/
 │   ├── 14_reports.sql
 │   └── 15_final_verification.sql
 │
-├── build/
 ├── .vscode/
 ├── CMakeLists.txt
 ├── .gitignore
@@ -195,8 +195,19 @@ Start MySQL and execute the SQL files from the `sql` folder in the following ord
 2. `02_constraints.sql`
 3. `03_alter_operations.sql`
 4. `04_seed_data.sql`
+5. `05_dml_operations.sql`
+6. `06_joins.sql`
+7. `07_subqueries.sql`
+8. `08_views.sql`
+9. `09_indexes.sql`
+10. `10_transactions.sql`
+11. `11_privileges.sql`
+12. `12_procedures.sql`
+13. `13_triggers.sql`
+14. `14_reports.sql`
+15. `15_final_verification.sql`
 
-Then execute the remaining SQL files as needed to create views, indexes, procedures, triggers and run reports.
+Some SQL files may not work properly if you run them more than once. It is better to start with a fresh database when setting up the project.
 
 ### 4. Database Connection
 
@@ -206,8 +217,8 @@ The project currently uses the following MySQL connection:
 mysqlx::Session session(
     "127.0.0.1",
     33060,
-    "root",
-    ""
+    "your_username",
+    "your_password"
 );
 ```
 
@@ -229,7 +240,7 @@ cmake --build build
 > **Note:** This project has currently been tested only on macOS, other operating systems may require additional setup or changes to the CMake configuration and dependency paths.
 ---
 
-This project was developed as part of learning and applying RDBMS concepts through a hands-on project.
+This project was developed as part of learning and applying RDBMS concepts.
 
 ## what i'd like to explore next
 
